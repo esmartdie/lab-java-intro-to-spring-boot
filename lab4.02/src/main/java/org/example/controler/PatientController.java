@@ -5,6 +5,7 @@ import org.example.model.Status;
 import org.example.repository.IEmployeeRepository;
 import org.example.repository.IPatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,17 +34,10 @@ public class PatientController {
     }
     @GetMapping("/patients/date_of_birth_range")
     @ResponseStatus(HttpStatus.OK)
-    public List<Patient> getByBirthdateRange(@RequestParam String startDate, @RequestParam String endDate){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date parsedStartDate = null;
-        Date parsedEndDate = null;
-        try {
-            parsedStartDate = dateFormat.parse(startDate);
-            parsedEndDate = dateFormat.parse(endDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return patientRepository.findByDateOfBirthBetween(parsedStartDate, parsedEndDate);
+    public List<Patient> getByBirthdateRange(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate ,
+                                             @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate){
+
+        return patientRepository.findByDateOfBirthBetween(startDate, endDate);
     }
 
     @GetMapping("/patients/department/{department}")
